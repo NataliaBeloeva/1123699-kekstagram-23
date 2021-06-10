@@ -1,4 +1,9 @@
-const DESCRIPTION = [
+const POSTS_COUNT = 25;
+const COMMENTS_COUNT = 6;
+const AVATAR_PATH = 'img/avatar-';
+const PHOTOS_PATH = 'photos/';
+
+const DESCRIPTIONS = [
   'Лето в Париже',
   'Веселые выходные',
   'А вы так можете?',
@@ -12,7 +17,7 @@ const DESCRIPTION = [
   'С днем рождения меня!',
 ];
 
-const COMMENTS_MESSAGE = [
+const COMMENTS = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
@@ -21,7 +26,7 @@ const COMMENTS_MESSAGE = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
 ];
 
-const COMMENTS_NAME = [
+const NAMES = [
   'Карла',
   'Стефани',
   'Кирилл',
@@ -32,59 +37,49 @@ const COMMENTS_NAME = [
   'Аврора',
 ];
 
-const AVATAR_PATH = 'img/avatar-';
-const PHOTOS_PATH = 'photos/';
-const SIMILAR_POSTS_COUNT = 25;
-const SIMILAR_COMMENTS_COUNT = 6;
-
-const LikesCount = {
+const likesCount = {
   MIN: 15,
   MAX: 200,
 };
 
-const CommentAvatarsCount = {
+const commentAvatarsCount = {
   MIN: 1,
   MAX: 6,
 };
 
-function getRandomPositiveInteger (first, second) {
-  const lower = Math.ceil(Math.min(Math.abs(first), Math.abs(second)));
-  const upper = Math.floor(Math.max(Math.abs(first), Math.abs(second)));
+const getRandomPositiveInteger = (a, b) => {
+  const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
+  const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
   const result = Math.random() * (upper - lower + 1) + lower;
   return Math.floor(result);
-}
+};
 
 const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
 
-const getOneOrTwoRandomArrayElements = function (elements) {
+const getOneOrTwoRandomArrayElements = (elements) => {
   const sortedElements = elements.sort(() => 0.5 - Math.random());
   const twoElememts = sortedElements.slice(0, getRandomPositiveInteger(1, 2));
   return twoElememts;
 };
 
-const createComment = function (elem, index) {
-  return {
-    id: index + 1,
-    avatar: `${AVATAR_PATH + (getRandomPositiveInteger(CommentAvatarsCount.MIN, CommentAvatarsCount.MAX))}.svg`,
-    message: getOneOrTwoRandomArrayElements(COMMENTS_MESSAGE),
-    name: getRandomArrayElement(COMMENTS_NAME),
-  };
-};
+const createComment = (idx) => ({
+  id: idx + 1,
+  avatar: `${AVATAR_PATH + (getRandomPositiveInteger(commentAvatarsCount.MIN, commentAvatarsCount.MAX))}.svg`,
+  message: getOneOrTwoRandomArrayElements(COMMENTS),
+  name: getRandomArrayElement(NAMES),
+});
 
-const createPost = function (elem, index) {
-  const similarComments = new Array(getRandomPositiveInteger(0, SIMILAR_COMMENTS_COUNT)).fill(null).map(createComment);
+const createPost = (index) => {
+  const similarComments = new Array(getRandomPositiveInteger(0, COMMENTS_COUNT)).fill(null).map((_, idx) => createComment(idx));
   return {
     id: index + 1,
     url: `${PHOTOS_PATH + (index + 1)}.jpg`,
-    description: getRandomArrayElement(DESCRIPTION),
-    likes: getRandomPositiveInteger(LikesCount.MIN, LikesCount.MAX),
+    description: getRandomArrayElement(DESCRIPTIONS),
+    likes: getRandomPositiveInteger(likesCount.MIN, likesCount.MAX),
     comments: similarComments,
   };
 };
 
-const createSimilarPosts = function () {
-  return new Array(SIMILAR_POSTS_COUNT).fill(null).map(createPost);
-};
+const createSimilarPosts = () => new Array(POSTS_COUNT).fill(null).map((_, index) => createPost(index));
 
 createSimilarPosts();
-//console.log(createSimilarPosts());
