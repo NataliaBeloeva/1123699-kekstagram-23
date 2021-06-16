@@ -1,6 +1,5 @@
 import {getRandomPositiveInteger, getRandomArrayElement, getOneOrTwoRandomArrayElements} from './util.js';
 
-const POSTS_COUNT = 25;
 const COMMENTS_COUNT = 6;
 const AVATAR_PATH = 'img/avatar-';
 const PHOTOS_PATH = 'photos/';
@@ -57,7 +56,7 @@ const createComment = (idx) => ({
 });
 
 const createPost = (index) => {
-  const similarComments = new Array(getRandomPositiveInteger(0, COMMENTS_COUNT)).fill(null).map((_, idx) => createComment(idx));
+  const similarComments = new Array(getRandomPositiveInteger(0, COMMENTS_COUNT)).fill(null).map((item, idx) => createComment(idx));
   return {
     id: index + 1,
     url: `${PHOTOS_PATH + (index + 1)}.jpg`,
@@ -67,6 +66,6 @@ const createPost = (index) => {
   };
 };
 
-const createSimilarPosts = () => new Array(POSTS_COUNT).fill(null).map((_, index) => createPost(index));
+const createSimilarPosts = (count) => new Array(count).fill(null).map((item, index) => createPost(index));
 
-createSimilarPosts();
+export {createSimilarPosts};
