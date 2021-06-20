@@ -1,3 +1,6 @@
+import {isEscEvent} from './util.js';
+
+const body = document.querySelector('body');
 const fullsize = document.querySelector('.big-picture');
 const fullsizeImg = fullsize.querySelector('.big-picture__img img');
 const fullsizeLikes = fullsize.querySelector('.likes-count');
@@ -11,6 +14,19 @@ const fullsizeCancel = fullsize.querySelector('.big-picture__cancel');
 const commentsAvatarSizes = {
   WIDTH: 35,
   HEIGHT: 35,
+};
+
+const closeFullsize = () => {
+  fullsize.classList.add('hidden');
+  body.classList.remove('modal-open');
+};
+
+const documentKeydownHandler = (evt) => {
+  if (isEscEvent(evt)) {
+    evt.preventDefault();
+    closeFullsize();
+    document.removeEventListener('keydown', documentKeydownHandler);
+  }
 };
 
 const createCommentTemplate = ({avatar, name, message}) => {
@@ -50,4 +66,16 @@ const renderFullsize = ({url, likes, comments, description}) => {
   fullsizeCommentsLoader.classList.add('hidden');
 };
 
-export {fullsize, fullsizeCancel, renderFullsize};
+const openFullsize = (element) => {
+  renderFullsize(element);
+  fullsize.classList.remove('hidden');
+  body.classList.add('modal-open');
+  document.addEventListener('keydown', documentKeydownHandler);
+
+  fullsizeCancel.addEventListener('click', () => {
+    closeFullsize();
+    document.removeEventListener('keydown', documentKeydownHandler);
+  });
+};
+
+export {openFullsize};
