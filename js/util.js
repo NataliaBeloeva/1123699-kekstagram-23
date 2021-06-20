@@ -13,6 +13,8 @@ const getOneOrTwoRandomArrayElements = (elements) => {
   return twoElements;
 };
 
+const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
 const checkStringLength = (string, length) => string.length <= length;
 
-export {getRandomPositiveInteger, getRandomArrayElement, getOneOrTwoRandomArrayElements, checkStringLength};
+export {getRandomPositiveInteger, getRandomArrayElement, getOneOrTwoRandomArrayElements, isEscEvent, checkStringLength};
