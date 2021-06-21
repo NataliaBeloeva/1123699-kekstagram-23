@@ -1,6 +1,5 @@
 import {isEscEvent} from './util.js';
 
-const body = document.querySelector('body');
 const fullsize = document.querySelector('.big-picture');
 const fullsizeImg = fullsize.querySelector('.big-picture__img img');
 const fullsizeLikes = fullsize.querySelector('.likes-count');
@@ -11,14 +10,11 @@ const fullsizeCommentsLoader = fullsize.querySelector('.comments-loader');
 const fullsizeDescription = fullsize.querySelector('.social__caption');
 const fullsizeCancel = fullsize.querySelector('.big-picture__cancel');
 
-const commentsAvatarSizes = {
-  WIDTH: 35,
-  HEIGHT: 35,
-};
+const AVATAR_SIZE = 35;
 
 const closeFullsize = () => {
   fullsize.classList.add('hidden');
-  body.classList.remove('modal-open');
+  document.body.classList.remove('modal-open');
 };
 
 const documentKeydownHandler = (evt) => {
@@ -39,8 +35,8 @@ const createCommentTemplate = ({avatar, name, message}) => {
   commentItemImg.classList.add('social__picture');
   commentItemImg.src = avatar;
   commentItemImg.alt = name;
-  commentItemImg.width = commentsAvatarSizes.WIDTH;
-  commentItemImg.height = commentsAvatarSizes.HEIGHT;
+  commentItemImg.width = AVATAR_SIZE;
+  commentItemImg.height = AVATAR_SIZE;
 
   commentItemText.classList.add('social__text');
   commentItemText.textContent = message;
@@ -69,7 +65,7 @@ const renderFullsize = ({url, likes, comments, description}) => {
 const openFullsize = (element) => {
   renderFullsize(element);
   fullsize.classList.remove('hidden');
-  body.classList.add('modal-open');
+  document.body.classList.add('modal-open');
   document.addEventListener('keydown', documentKeydownHandler);
 
   fullsizeCancel.addEventListener('click', () => {

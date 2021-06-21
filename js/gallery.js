@@ -7,9 +7,13 @@ const addPreviewClickHandlers = (data) => {
     if (evt.target.closest('.picture')) {
       evt.preventDefault();
       const onePreview = evt.target.closest('.picture');
-      const onePreviewId = +onePreview.getAttribute('data-id');
+      const onePreviewId = +onePreview.dataset.id;
+      const dataElement = data.find(({id}) => id === onePreviewId);
 
-      openFullsize(data.find(({id}) => id === onePreviewId));
+      if (dataElement === undefined) {
+        throw new Error('Element not found');
+      }
+      openFullsize(dataElement);
     }
   };
 
