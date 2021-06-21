@@ -1,5 +1,6 @@
 import {isEscEvent} from './util.js';
 
+const MAX_HASHTAG_COUNT = 5;
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadForm.querySelector('#upload-file');
 const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
@@ -14,8 +15,8 @@ const hashtagInputHandler = () => {
   const hashtags = uploadHashtag.value.toLowerCase().split(' ').sort();
 
   hashtags.forEach((item) => {
-    if (hashtags.length > 5) {
-      uploadHashtag.setCustomValidity('Нельзя указать больше пяти хэштегов');
+    if (hashtags.length > MAX_HASHTAG_COUNT) {
+      uploadHashtag.setCustomValidity(`Нельзя указать больше ${MAX_HASHTAG_COUNT} хэштегов`);
     } else if (!uploadHashtagRegex.test(item)) {
       uploadHashtag.setCustomValidity('Хештег должен начинаться с символа # и содержать от 1 до 20 букв или цифр');
     } else {
