@@ -1,3 +1,5 @@
+import {isEscEvent} from './util.js';
+
 const fullsize = document.querySelector('.big-picture');
 const fullsizeImg = fullsize.querySelector('.big-picture__img img');
 const fullsizeLikes = fullsize.querySelector('.likes-count');
@@ -8,9 +10,19 @@ const fullsizeCommentsLoader = fullsize.querySelector('.comments-loader');
 const fullsizeDescription = fullsize.querySelector('.social__caption');
 const fullsizeCancel = fullsize.querySelector('.big-picture__cancel');
 
-const commentsAvatarSizes = {
-  WIDTH: 35,
-  HEIGHT: 35,
+const AVATAR_SIZE = 35;
+
+const closeFullsize = () => {
+  fullsize.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+};
+
+const documentKeydownHandler = (evt) => {
+  if (isEscEvent(evt)) {
+    evt.preventDefault();
+    closeFullsize();
+    document.removeEventListener('keydown', documentKeydownHandler);
+  }
 };
 
 const createCommentTemplate = ({avatar, name, message}) => {
@@ -23,8 +35,8 @@ const createCommentTemplate = ({avatar, name, message}) => {
   commentItemImg.classList.add('social__picture');
   commentItemImg.src = avatar;
   commentItemImg.alt = name;
-  commentItemImg.width = commentsAvatarSizes.WIDTH;
-  commentItemImg.height = commentsAvatarSizes.HEIGHT;
+  commentItemImg.width = AVATAR_SIZE;
+  commentItemImg.height = AVATAR_SIZE;
 
   commentItemText.classList.add('social__text');
   commentItemText.textContent = message;
@@ -50,4 +62,16 @@ const renderFullsize = ({url, likes, comments, description}) => {
   fullsizeCommentsLoader.classList.add('hidden');
 };
 
-export {fullsize, fullsizeCancel, renderFullsize};
+const openFullsize = (element) => {
+  renderFullsize(element);
+  fullsize.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  document.addEventListener('keydown', documentKeydownHandler);
+
+  fullsizeCancel.addEventListener('click', () => {
+    closeFullsize();
+    document.removeEventListener('keydown', documentKeydownHandler);
+  });
+};
+
+export {openFullsize};
