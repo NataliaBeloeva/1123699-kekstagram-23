@@ -7,7 +7,7 @@ const renderOnePicture = ({id, url, likes, comments}) => {
   const pictureLikes = pictureElement.querySelector('.picture__likes');
   const pictureComments = pictureElement.querySelector('.picture__comments');
 
-  pictureElement.setAttribute('data-id', id);
+  pictureElement.dataset.id = id;
   pictureImg.src = url;
   pictureLikes.textContent = likes;
   pictureComments.textContent = comments.length;

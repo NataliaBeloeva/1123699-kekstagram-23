@@ -10,7 +10,7 @@ const addPreviewClickHandlers = (data) => {
       const onePreviewId = +onePreview.dataset.id;
       const dataElement = data.find(({id}) => id === onePreviewId);
 
-      if (dataElement === undefined) {
+      if (!dataElement) {
         throw new Error('Element not found');
       }
       openFullsize(dataElement);

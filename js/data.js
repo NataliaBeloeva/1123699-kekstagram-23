@@ -1,6 +1,6 @@
 import {getRandomPositiveInteger, getRandomArrayElement, getOneOrTwoRandomArrayElements} from './util.js';
 
-const COMMENTS_COUNT = 6;
+const COMMENTS_COUNT = 20;
 const AVATAR_PATH = 'img/avatar-';
 const PHOTOS_PATH = 'photos/';
 
