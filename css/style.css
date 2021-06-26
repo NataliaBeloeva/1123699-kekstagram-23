@@ -1403,3 +1403,7 @@ main {
 .hidden {
   display: none;
 }
+
+.is-invalid {
+  outline: 2px solid red;
+}
