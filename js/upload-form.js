@@ -1,7 +1,7 @@
 import {isEscEvent} from './util.js';
+import {resetUploadEdit} from './upload-edit.js';
 
 const MAX_HASHTAG_COUNT = 5;
-const MAX_HASHTAGS_LENGTH = 20;
 const HASHTAG_REGEX =  /^#[a-zA-Zа-яА-я0-9]{1,19}$/;
 
 const uploadForm = document.querySelector('.img-upload__form');
@@ -14,55 +14,58 @@ const uploadHashtag = uploadForm.querySelector('.text__hashtags');
 const isUploadFormActiveField = () => document.activeElement === uploadHashtag || document.activeElement === uploadDescription;
 
 const setInputInvalid = (errorMsg) => {
-  uploadHashtag.classList.add('is-invalid');
+  uploadHashtag.style.outline = '2px solid red';
   uploadHashtag.setCustomValidity(errorMsg);
 };
 
 const setInputValid = () => {
-  uploadHashtag.classList.remove('is-invalid');
+  uploadHashtag.style.outline = 'revert';
   uploadHashtag.setCustomValidity('');
 };
 
-const hashtagInputHandler = () => {
-  let hashtagValid = true;
-  let hashtagsLength = 0;
+const hashtagValidator = (hashtagString) => {
+  const hashtags = hashtagString.trim().split(' ').map((item) => item.toLowerCase());
 
-  if (uploadHashtag.value !== '') {
-    const hashtagsSplit = uploadHashtag.value.trim().split(' ');
-    const hashtags = hashtagsSplit.map((item) => item.toLowerCase());
-    const hashtagSet = new Set(hashtags);
+  if (hashtags.length > MAX_HASHTAG_COUNT) {
+    setInputInvalid(`Нельзя указать больше чем ${MAX_HASHTAG_COUNT} хештегов`);
+    return;
+  }
 
-    for (let i = 0; i < hashtags.length; i++) {
-      hashtagsLength = hashtags[i].length;
-      hashtagValid = hashtagValid && HASHTAG_REGEX.test(hashtags[i]);
+  for (let i = 0; i < hashtags.length; i++) {
+    const hashtag = hashtags[i];
+    const hashtagValid = HASHTAG_REGEX.test(hashtag);
+
+    if (!hashtagValid) {
+      setInputInvalid('Максимальная длина одного хештега 20 символов, включая решётку, должна состоять из букв и чисел и не может содержать пробелы, спецсимволы (#, @, $ и т. п.), символы пунктуации (тире, дефис, запятая и т. п.), эмодзи и т. д');
+      return;
     }
-
-    if (hashtags.length > MAX_HASHTAG_COUNT) {
-      setInputInvalid(`Нельзя указать больше чем ${MAX_HASHTAG_COUNT} хештегов`);
-    } else if (hashtags.includes('#')) {
-      setInputInvalid('Хештег не может состоять только из одной решётки');
-    } else if (hashtagsLength > MAX_HASHTAGS_LENGTH) {
-      setInputInvalid(`Максимальная длина одного хештега ${MAX_HASHTAGS_LENGTH} символов, включая решётку`);
-    } else if (!hashtagValid) {
-      setInputInvalid('Строка должна начинаться с решетки, состоять из букв и чисел и не может содержать пробелы, спецсимволы (#, @, $ и т. п.), символы пунктуации (тире, дефис, запятая и т. п.), эмодзи и т. д');
-    } else if (hashtags.length !== hashtagSet.size) {
+    if (hashtags.includes(hashtag, i + 1)) {
       setInputInvalid('Один и тот же хэштег не может быть использован дважды. Хештеги нечувствительны к регистру');
-    } else {
-      setInputValid();
+      return;
     }
-    uploadHashtag.reportValidity();
-  } else {
-    setInputValid();
   }
 };
+
+const hashtagInputHandler = () => {
+  const hashtagString = uploadHashtag.value;
+
+  setInputValid();
+  if (hashtagString !== '') {
+    hashtagValidator(hashtagString);
+  }
+  uploadHashtag.reportValidity();
+};
+
 
 const closeUploadForm = () => {
   uploadOverlay.classList.add('hidden');
   document.body.classList.remove('modal-open');
 
   setInputValid();
-  uploadHashtag.removeEventListener('input', hashtagInputHandler);
+  resetUploadEdit();
   uploadForm.reset();
+
+  uploadHashtag.removeEventListener('input', hashtagInputHandler);
   uploadCancel.removeEventListener('click', closeUploadForm);
 };
 

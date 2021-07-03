@@ -1,25 +1,28 @@
 import {openFullsize} from './fullsize-picture.js';
 
-const addPreviewClickHandlers = (data) => {
-  const previewSection = document.querySelector('.pictures');
+const previewSection = document.querySelector('.pictures');
 
-  const previewClickHandler = (evt) => {
-    if (evt.target.closest('.picture')) {
-      evt.preventDefault();
-      const onePreview = evt.target.closest('.picture');
-      const onePreviewId = +onePreview.dataset.id;
-      const dataElement = data.find(({id}) => id === onePreviewId);
+let data;
 
-      if (!dataElement) {
-        throw new Error('Element not found');
-      }
-      openFullsize(dataElement);
+const previewClickHandler = (evt) => {
+  const preview = evt.target.closest('.picture');
+  if (preview) {
+    evt.preventDefault();
+    const previewId = +preview.dataset.id;
+    const dataElement = data.find(({id}) => id === previewId);
+
+    if (!dataElement) {
+      throw new Error('Element not found');
     }
-  };
-
-  previewSection.addEventListener('click', previewClickHandler);
+    openFullsize(dataElement);
+  }
 };
 
+previewSection.addEventListener('click', previewClickHandler);
 
-export {addPreviewClickHandlers};
+const setData = (photos) => {
+  data = photos;
+};
+
+export {setData};
 
