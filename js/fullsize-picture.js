@@ -1,7 +1,7 @@
 import {isEscEvent} from './util.js';
 
 const AVATAR_SIZE = 35;
-const COMMENTS_SHOWN_COUNT = 5;
+const COMMENTS_STEP = 5;
 
 const fullsize = document.querySelector('.big-picture');
 const fullsizeImg = fullsize.querySelector('.big-picture__img img');
@@ -15,8 +15,8 @@ const fullsizeDescription = fullsize.querySelector('.social__caption');
 const fullsizeCancel = fullsize.querySelector('.big-picture__cancel');
 const fullsizeFooter = fullsize.querySelector('.social__footer');
 
-let commentsList = [];
-let commentsAmount = COMMENTS_SHOWN_COUNT;
+let commentsData = [];
+let commentsStart = 0;
 
 const createCommentTemplate = ({avatar, name, message}) => {
   const commentItem = document.createElement('li');
@@ -40,21 +40,8 @@ const createCommentTemplate = ({avatar, name, message}) => {
   return commentItem;
 };
 
-const clearComments = () => {
-  commentsList = [];
-  commentsAmount = COMMENTS_SHOWN_COUNT;
-};
-
-const renderFirstComments = (commentsArray) => {
-  clearComments();
-  commentsList = commentsArray.slice();
-  const shownComments = commentsList.slice(0, COMMENTS_SHOWN_COUNT);
-  shownComments.forEach((comment) => {
-    fullsizeComments.appendChild(createCommentTemplate(comment));
-  });
-};
-
 const showCommentsDomElements = () => {
+  fullsizeComments.innerHTML = '';
   fullsizeCommentsCount.classList.remove('hidden');
   fullsizeComments.classList.remove('hidden');
   fullsizeCommentsLoader.classList.remove('hidden');
@@ -68,20 +55,33 @@ const hideCommentsDomElements = () => {
   fullsizeFooter.style.border = 0;
 };
 
-const fullsizeCommentsLoaderClick = () => {
-  const nextCommentsAmount = commentsAmount + COMMENTS_SHOWN_COUNT;
-  const commentsToShow = commentsList.slice(commentsAmount, nextCommentsAmount);
+const clearComments = () => {
+  commentsData = [];
+  commentsStart = 0;
+  showCommentsDomElements();
+};
 
-  commentsToShow.forEach((comment) => {
+const renderComments = () => {
+  if (commentsData.length === 0) {
+    hideCommentsDomElements();
+    return;
+  }
+
+  const commentsToLoad = commentsData.slice(commentsStart, commentsStart + COMMENTS_STEP);
+  commentsToLoad.forEach((comment) => {
     fullsizeComments.appendChild(createCommentTemplate(comment));
   });
 
   fullsizeCommentsShown.textContent = fullsizeComments.children.length;
-  commentsAmount = nextCommentsAmount;
-
-  if (commentsList.length === fullsizeComments.children.length) {
+  if (commentsData.length === fullsizeComments.children.length) {
     fullsizeCommentsLoader.classList.add('hidden');
   }
+
+  commentsStart += COMMENTS_STEP;
+};
+
+const fullsizeCommentsLoaderClick = () => {
+  renderComments();
 };
 
 const renderFullsize = ({url, likes, comments, description}) => {
@@ -89,19 +89,10 @@ const renderFullsize = ({url, likes, comments, description}) => {
   fullsizeLikes.textContent = likes;
   fullsizeCommentsTotal.textContent = comments.length;
   fullsizeDescription.textContent = description;
-  fullsizeComments.innerHTML = '';
 
-  if (comments.length === 0) {
-    hideCommentsDomElements();
-  } else if (comments.length > COMMENTS_SHOWN_COUNT) {
-    fullsizeCommentsShown.textContent = COMMENTS_SHOWN_COUNT;
-    showCommentsDomElements();
-  } else {
-    fullsizeCommentsShown.textContent = comments.length;
-    fullsizeCommentsLoader.classList.add('hidden');
-  }
-
-  renderFirstComments(comments);
+  clearComments();
+  commentsData = comments;
+  renderComments();
 
   fullsizeCommentsLoader.addEventListener('click', fullsizeCommentsLoaderClick);
 };
