@@ -1,7 +1,7 @@
 import {showAlert} from './util.js';
 
 const DOWNLOAD_URL = 'https://23.javascript.pages.academy/kekstagram/data';
-const UPLOAD_URL = 'https://23.javascript.pages.academy/kekstagram§';
+const UPLOAD_URL = 'https://23.javascript.pages.academy/kekstagram';
 const ALERT_TIMEOUT = 5000;
 const ALERT_MSG = 'Ошибка загрузки данных. Попробуйте еще раз';
 
