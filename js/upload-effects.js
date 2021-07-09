@@ -1,60 +1,10 @@
-const SCALE_STEP = 25;
 const DEFAULT_EFFECT = 'none';
-
-const uploadForm = document.querySelector('.img-upload__form');
-const uploadFormImg = uploadForm.querySelector('.img-upload__preview img');
-
-const scale = uploadForm.querySelector('.img-upload__scale');
-const scaleControlSmaller = scale.querySelector('.scale__control--smaller');
-const scaleControlBigger = scale.querySelector('.scale__control--bigger');
-const scaleControlText = scale.querySelector('.scale__control--value');
-
-const sliderWrap = uploadForm.querySelector('.img-upload__effect-level');
-const sliderElement = sliderWrap.querySelector('.effect-level__slider');
-
-const effectsList = uploadForm.querySelector('.effects__list');
-const effectsLevelValue = uploadForm.querySelector('.effect-level__value');
-
-const scaleValue = {
-  MIN: 25,
-  MAX: 100,
-};
-
-let currentEffect = DEFAULT_EFFECT;
-
-const getScale = (step) => {
-  const scaleControlValue = parseInt(scaleControlText.value, 10);
-  const scaleControlValueCurrent = scaleControlValue + step;
-  if (scaleControlValueCurrent > scaleValue.MAX) {
-    return scaleValue.MAX;
-  }
-  if (scaleControlValueCurrent < scaleValue.MIN) {
-    return scaleValue.MIN;
-  }
-  return scaleControlValueCurrent;
-};
-
-const setScale = (value) => {
-  scaleControlText.value = `${value}%`;
-  uploadFormImg.style.transform = `scale(${value / 100})`;
-};
-
-const resetScale = () => {
-  setScale(scaleValue.MAX);
-};
 
 const sliderOptionsDefault = {
   connect: 'lower',
   format: {
-    to: function (value) {
-      if (Number.isInteger(value)) {
-        return value.toFixed(0);
-      }
-      return value.toFixed(1);
-    },
-    from: function (value) {
-      return parseFloat(value);
-    },
+    to: (value) => (Number.isInteger(value)) ? value.toFixed(0) : value.toFixed(1),
+    from: (value) => parseFloat(value),
   },
 };
 
@@ -121,6 +71,17 @@ const sliderOptionsEffects = {
   },
 };
 
+const uploadForm = document.querySelector('.img-upload__form');
+const uploadFormImg = uploadForm.querySelector('.img-upload__preview img');
+
+const sliderWrap = uploadForm.querySelector('.img-upload__effect-level');
+const sliderElement = sliderWrap.querySelector('.effect-level__slider');
+
+const effectsList = uploadForm.querySelector('.effects__list');
+const effectsLevelValue = uploadForm.querySelector('.effect-level__value');
+
+let currentEffect = DEFAULT_EFFECT;
+
 const changeEffectClassname = (item) => {
   uploadFormImg.classList.remove(`effects__preview--${currentEffect}`);
   currentEffect = item.value;
@@ -176,21 +137,8 @@ const effectsRadioClickHandler = (evt) => {
   }
 };
 
-const resetUploadEdit = () => {
-  resetScale();
-  resetEffects();
-};
-
-resetUploadEdit();
-
-scaleControlSmaller.addEventListener('click', () => {
-  setScale(getScale(-SCALE_STEP));
-});
-scaleControlBigger.addEventListener('click', () => {
-  setScale(getScale(SCALE_STEP));
-});
+resetEffects();
 
 effectsList.addEventListener('click', effectsRadioClickHandler);
 
-
-export {resetUploadEdit};
+export {resetEffects};
