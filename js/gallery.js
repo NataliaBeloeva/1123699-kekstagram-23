@@ -1,10 +1,23 @@
 import {openFullsize} from './fullsize-picture.js';
 
-const previewSection = document.querySelector('.pictures');
+const pictureList = document.querySelector('.pictures');
+const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-let data;
+const renderPicture = ({id, url, likes, comments}) => {
+  const pictureElement = pictureTemplate.cloneNode(true);
+  const pictureImg = pictureElement.querySelector('.picture__img');
+  const pictureLikes = pictureElement.querySelector('.picture__likes');
+  const pictureComments = pictureElement.querySelector('.picture__comments');
 
-const previewClickHandler = (evt) => {
+  pictureElement.dataset.id = id;
+  pictureImg.src = url;
+  pictureLikes.textContent = likes;
+  pictureComments.textContent = comments.length;
+
+  return pictureElement;
+};
+
+const pictureClickHandler = (evt, data) => {
   const preview = evt.target.closest('.picture');
   if (preview) {
     evt.preventDefault();
@@ -18,11 +31,17 @@ const previewClickHandler = (evt) => {
   }
 };
 
-previewSection.addEventListener('click', previewClickHandler);
+const renderAllPictures = (pictures) => {
+  const pictureListFragment = document.createDocumentFragment();
 
-const setData = (photos) => {
-  data = photos;
+  pictures.forEach((item) => {
+    pictureListFragment.appendChild(renderPicture(item));
+  });
+
+  pictureList.appendChild(pictureListFragment);
+  pictureList.addEventListener('click', (evt) => {
+    pictureClickHandler(evt, pictures);
+  });
 };
 
-export {setData};
-
+export {renderAllPictures};
