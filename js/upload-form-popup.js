@@ -1,33 +1,28 @@
 import {isEscEvent} from './util.js';
 
-const successDomElements = document.querySelector('#success').content.querySelector('.success');
-const errorDomElements = document.querySelector('#error').content.querySelector('.error');
+const successTemplate = document.querySelector('#success').content.querySelector('.success');
+const errorTemplate = document.querySelector('#error').content.querySelector('.error');
 
-const uploadTypes = {
-  success: successDomElements,
-  fail: errorDomElements,
+const popupTemplates = {
+  success: successTemplate,
+  error: errorTemplate,
 };
-
-let uploadResult = '';
 
 const removePopup = () => {
-  uploadTypes[uploadResult].remove();
-  uploadResult = '';
-  // eslint-disable-next-line no-use-before-define
-  document.removeEventListener('keydown', documentKeydownHandler);
-  // eslint-disable-next-line no-use-before-define
-  document.removeEventListener('click', documentClickHandler);
-};
-
-const popupBtnClickHandler = () => {
-  removePopup();
+  const popup = document.querySelector('.success') || document.querySelector('.error');
+  if (popup) {
+    popup.remove();
+    // eslint-disable-next-line no-use-before-define
+    document.removeEventListener('keydown', documentKeydownHandler);
+    // eslint-disable-next-line no-use-before-define
+    document.removeEventListener('click', documentClickHandler);
+  }
 };
 
 const documentKeydownHandler = (evt) => {
   if (isEscEvent(evt)) {
     evt.preventDefault();
     removePopup();
-    document.removeEventListener('keydown', documentKeydownHandler);
   }
 };
 
@@ -37,11 +32,15 @@ const documentClickHandler = (evt) => {
   }
 };
 
-const renderPopup = (result) => {
-  uploadResult = result;
-  document.body.appendChild(uploadTypes[result]);
+const popupBtnClickHandler = () => {
+  removePopup();
+};
 
-  const popupBtn = uploadTypes[result].querySelector('button');
+const renderPopup = (type) => {
+  const popup = popupTemplates[type].cloneNode(true);
+  document.body.appendChild(popup);
+
+  const popupBtn = popup.querySelector('button');
 
   popupBtn.addEventListener('click', popupBtnClickHandler);
   document.addEventListener('click', documentClickHandler);

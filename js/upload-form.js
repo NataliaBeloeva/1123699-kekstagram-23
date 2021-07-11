@@ -2,8 +2,10 @@ import {isEscEvent} from './util.js';
 import {isUploadFormActiveField, setInputValid, hashtagInputHandler} from './validator.js';
 import {resetScale} from './upload-scale.js';
 import {resetEffects} from './upload-effects.js';
-import {sendData} from './api.js';
+import {createRequest} from './service.js';
 import {renderPopup} from './upload-form-popup.js';
+
+const UPLOAD_URL = 'https://23.javascript.pages.academy/kekstagram';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadForm.querySelector('#upload-file');
@@ -36,7 +38,6 @@ const documentKeydownHandler = (evt) => {
   }
 };
 
-
 const openUploadForm = () => {
   uploadOverlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
@@ -56,29 +57,29 @@ const uploadFileChangeHandler = () => {
   openUploadForm();
 };
 
-const setFormSuccess = () => {
+const onFormSendSuccess = () => {
   closeUploadForm();
   renderPopup('success');
 };
 
-const setFormError = () => {
+const onFormSendError = () => {
   closeUploadForm();
-  renderPopup('fail');
+  renderPopup('error');
 };
 
-const setUserFormSubmit = (onSuccess, onError) => {
-  uploadForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
+uploadForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  const formData =  new FormData(evt.target);
 
-    sendData(
-      () => onSuccess(),
-      () => onError(),
-      new FormData(evt.target),
-    );
-  });
-};
+  createRequest(
+    onFormSendSuccess,
+    onFormSendError,
+    UPLOAD_URL,
+    {
+      method: 'POST',
+      body: formData,
+    },
+  );
+});
 
 uploadFile.addEventListener('change', uploadFileChangeHandler);
-
-setUserFormSubmit(setFormSuccess, setFormError);
-
