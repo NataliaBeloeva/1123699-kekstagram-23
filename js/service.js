@@ -8,7 +8,7 @@ const createRequest = (onSuccess, onError, url, options) => {
       }
     })
     .then((result) => {
-      if (result) {
+      if (onSuccess) {
         onSuccess(result);
       }
     })

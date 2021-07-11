@@ -7,6 +7,17 @@ const getRandomPositiveInteger = (a, b) => {
 
 const getRandomArrayElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
 
+const getRandomUniqueArrayElement = (min, max, length) => {
+  const elements = [];
+  while (elements.length !== length) {
+    const number = getRandomPositiveInteger(min, max);
+    if (!elements.includes(number)) {
+      elements.push(number);
+    }
+  }
+  return elements;
+};
+
 const getOneOrTwoRandomArrayElements = (elements) => {
   const sortedElements = elements.sort(() => 0.5 - Math.random());
   const twoElements = sortedElements.slice(0, getRandomPositiveInteger(1, 2));
@@ -36,4 +47,13 @@ const showAlert = (message, timeOut) => {
   }, timeOut);
 };
 
-export {getRandomPositiveInteger, getRandomArrayElement, getOneOrTwoRandomArrayElements, isEscEvent, showAlert};
+const debounce = (callback, timeoutDelay) => {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+export {getRandomPositiveInteger, getRandomArrayElement, getOneOrTwoRandomArrayElements, isEscEvent, showAlert, getRandomUniqueArrayElement, debounce};

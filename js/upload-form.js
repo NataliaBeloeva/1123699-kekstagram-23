@@ -67,6 +67,8 @@ const onFormSendError = () => {
   renderPopup('error');
 };
 
+uploadFile.addEventListener('change', uploadFileChangeHandler);
+
 uploadForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const formData =  new FormData(evt.target);
@@ -82,4 +84,4 @@ uploadForm.addEventListener('submit', (evt) => {
   );
 });
 
-uploadFile.addEventListener('change', uploadFileChangeHandler);
+
