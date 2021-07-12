@@ -16,14 +16,20 @@ const uploadHashtag = uploadForm.querySelector('.text__hashtags');
 const uploadFormImg = uploadForm.querySelector('.img-upload__preview img');
 const uploadFormEffectPreviews = uploadForm.querySelectorAll('.effects__preview');
 
-const resetUploadEdit = () => {
+const resetUploadImage = () => {
+  uploadFormImg.src = '';
+  uploadFormEffectPreviews.forEach((item) => item.style.backgroundImage = 'none');
+};
+
+const resetUpload = () => {
+  resetUploadImage();
   resetScale();
   resetEffects();
 };
 
 const closeUploadForm = () => {
   setInputValid();
-  resetUploadEdit();
+  resetUpload();
   uploadForm.reset();
 
   uploadOverlay.classList.add('hidden');
@@ -42,7 +48,7 @@ const documentKeydownHandler = (evt) => {
 };
 
 const openUploadForm = () => {
-  resetUploadEdit();
+  resetUpload();
 
   uploadOverlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
@@ -60,9 +66,6 @@ const uploadImage = () => {
   const file = uploadFile.files[0];
   const fileName = file.name.toLowerCase();
   const matches = FILE_TYPES.some((item) => fileName.endsWith(item));
-
-  uploadFormImg.src = '';
-  uploadFormEffectPreviews.forEach((item) => item.style.backgroundImage = 'none');
 
   if (matches) {
     const reader = new FileReader();
