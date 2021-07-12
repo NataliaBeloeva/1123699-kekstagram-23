@@ -1,46 +1,60 @@
-import {getRandomUniqueArrayElement} from './util.js';
+import {getRandomUniqueArrayElement, debounce} from './util.js';
+import {renderPictures} from './gallery.js';
 
 const PICTURES_RANDOM_MAX_COUNT = 10;
-const imgFilters = document.querySelector('.img-filters');
-const filterDefault = imgFilters.querySelector('#filter-default');
+const FILTER_ACTIVE_CLASS = 'img-filters__button--active';
+const DEBOUNCE_DELAY = 500;
 
-let currentFilter = filterDefault;
+const filterContainer = document.querySelector('.img-filters');
 
-const applyFilterDefault = (pictures) => pictures;
+let pictures;
 
-const applyFilterRandom = (pictures) => {
-  const randomUniqueNumbers = getRandomUniqueArrayElement(0, pictures.length - 1, PICTURES_RANDOM_MAX_COUNT);
-  const picturesRandom = pictures.filter((picture) => randomUniqueNumbers.includes(picture.id));
+const applyFilterDefault = (data) => data;
+
+const applyFilterRandom = (data) => {
+  const randomUniqueNumbers = getRandomUniqueArrayElement(0, data.length - 1, PICTURES_RANDOM_MAX_COUNT);
+  const picturesRandom = data.filter((item) => randomUniqueNumbers.includes(item.id));
   return picturesRandom;
 };
 
-const applyFilterDiscussed = (pictures) => {
-  const picturesDiscussed = pictures.slice().sort((pictureA, pictureB) => pictureB.comments.length - pictureA.comments.length);
+const applyFilterDiscussed = (data) => {
+  const picturesDiscussed = data.slice().sort((a, b) => b.comments.length - a.comments.length);
   return picturesDiscussed;
 };
 
-const addFilterHandlers = (cb, pictures) => {
-  const filters = {
-    'filter-default': applyFilterDefault,
-    'filter-random': applyFilterRandom,
-    'filter-discussed': applyFilterDiscussed,
-  };
-
-  imgFilters.classList.remove('img-filters--inactive');
-
-  imgFilters.addEventListener('click', (evt) => {
-    if (evt.target.matches('.img-filters__button')) {
-      currentFilter.classList.remove('img-filters__button--active');
-      evt.target.classList.add('img-filters__button--active');
-      currentFilter = evt.target;
-
-      const currentFilterName = evt.target.id;
-      const filteredPictures = filters[currentFilterName](pictures);
-
-      cb(filteredPictures);
-    }
-  });
+const filters = {
+  'filter-default': applyFilterDefault,
+  'filter-random': applyFilterRandom,
+  'filter-discussed': applyFilterDiscussed,
 };
 
+const setFilterActive = (evt) => {
+  if (evt.target.matches('.img-filters__button')) {
+    const filterBtn = evt.target;
 
-export {addFilterHandlers};
+    document.querySelector('.img-filters__button--active').classList.remove(FILTER_ACTIVE_CLASS);
+    filterBtn.classList.add(FILTER_ACTIVE_CLASS);
+  }
+};
+
+const handleFilterClick = debounce((evt) => {
+  if (evt.target.matches('.img-filters__button')) {
+    const filterCurrent = evt.target.id;
+    const filteredPictures = filters[filterCurrent](pictures);
+
+    renderPictures(filteredPictures);
+  }
+}, DEBOUNCE_DELAY);
+
+const filterContainerClickHandler = (evt) => {
+  setFilterActive(evt);
+  handleFilterClick(evt);
+};
+
+const activateFilters = (data) => {
+  pictures = data;
+  filterContainer.classList.remove('img-filters--inactive');
+  filterContainer.addEventListener('click', filterContainerClickHandler);
+};
+
+export {activateFilters};

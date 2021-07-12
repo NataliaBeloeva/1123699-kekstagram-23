@@ -3,7 +3,7 @@ import {openFullsize} from './fullsize-picture.js';
 const pictureList = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-let data;
+let pictures;
 
 const renderPicture = ({id, url, likes, comments}) => {
   const picture = pictureTemplate.cloneNode(true);
@@ -20,11 +20,11 @@ const renderPicture = ({id, url, likes, comments}) => {
 };
 
 const pictureClickHandler = (evt) => {
-  const preview = evt.target.closest('.picture');
-  if (preview) {
+  const picture = evt.target.closest('.picture');
+  if (picture) {
     evt.preventDefault();
-    const previewId = +preview.dataset.id;
-    const dataElement = data.find(({id}) => id === previewId);
+    const pictureId = +picture.dataset.id;
+    const dataElement = pictures.find(({id}) => id === pictureId);
 
     if (!dataElement) {
       throw new Error('Element not found');
@@ -37,9 +37,9 @@ const removePictures = () => {
   pictureList.querySelectorAll('.picture').forEach((item) => item.remove());
 };
 
-const renderPictures = (pictures) => {
+const renderPictures = (data) => {
   const pictureListFragment = document.createDocumentFragment();
-  data = pictures;
+  pictures = data;
 
   removePictures();
 
