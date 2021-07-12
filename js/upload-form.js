@@ -2,7 +2,7 @@ import {isEscEvent} from './util.js';
 import {isUploadFormActiveField, setInputValid, hashtagInputHandler} from './validator.js';
 import {resetScale} from './upload-scale.js';
 import {resetEffects} from './upload-effects.js';
-import {createRequest} from './service.js';
+import {createRequest} from './api.js';
 import {renderPopup} from './upload-form-popup.js';
 
 const UPLOAD_URL = 'https://23.javascript.pages.academy/kekstagram';
