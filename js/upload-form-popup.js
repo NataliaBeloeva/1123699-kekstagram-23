@@ -13,9 +13,9 @@ const removePopup = () => {
   if (popup) {
     popup.remove();
     // eslint-disable-next-line no-use-before-define
-    document.removeEventListener('keydown', documentKeydownHandler);
-    // eslint-disable-next-line no-use-before-define
     document.removeEventListener('click', documentClickHandler);
+    // eslint-disable-next-line no-use-before-define
+    document.removeEventListener('keydown', documentKeydownHandler);
   }
 };
 
@@ -32,9 +32,7 @@ const documentClickHandler = (evt) => {
   }
 };
 
-const popupBtnClickHandler = () => {
-  removePopup();
-};
+const popupBtnClickHandler = () => removePopup();
 
 const renderPopup = (type) => {
   const popup = popupTemplates[type].cloneNode(true);

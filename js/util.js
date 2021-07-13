@@ -26,7 +26,7 @@ const getOneOrTwoRandomArrayElements = (elements) => {
 
 const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-const showAlert = (message, timeOut) => {
+const showAlert = (message, timeoutDelay) => {
   const alertContainer = document.createElement('div');
   alertContainer.style.zIndex = 100;
   alertContainer.style.position = 'absolute';
@@ -44,7 +44,7 @@ const showAlert = (message, timeOut) => {
 
   setTimeout(() => {
     alertContainer.remove();
-  }, timeOut);
+  }, timeoutDelay);
 };
 
 const debounce = (callback, timeoutDelay) => {

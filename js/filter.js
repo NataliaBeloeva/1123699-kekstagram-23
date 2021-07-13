@@ -2,10 +2,9 @@ import {getRandomUniqueArrayElement, debounce} from './util.js';
 import {renderPictures} from './gallery.js';
 
 const PICTURES_RANDOM_MAX_COUNT = 10;
-const FILTER_ACTIVE_CLASS = 'img-filters__button--active';
 const DEBOUNCE_DELAY = 500;
 
-const filterContainer = document.querySelector('.img-filters');
+const filterList = document.querySelector('.img-filters');
 
 let pictures;
 
@@ -32,8 +31,8 @@ const setFilterActive = (evt) => {
   if (evt.target.matches('.img-filters__button')) {
     const filterBtn = evt.target;
 
-    document.querySelector('.img-filters__button--active').classList.remove(FILTER_ACTIVE_CLASS);
-    filterBtn.classList.add(FILTER_ACTIVE_CLASS);
+    document.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
+    filterBtn.classList.add('img-filters__button--active');
   }
 };
 
@@ -46,15 +45,15 @@ const handleFilterClick = debounce((evt) => {
   }
 }, DEBOUNCE_DELAY);
 
-const filterContainerClickHandler = (evt) => {
+const filterListClickHandler = (evt) => {
   setFilterActive(evt);
   handleFilterClick(evt);
 };
 
 const activateFilters = (data) => {
   pictures = data;
-  filterContainer.classList.remove('img-filters--inactive');
-  filterContainer.addEventListener('click', filterContainerClickHandler);
+  filterList.classList.remove('img-filters--inactive');
+  filterList.addEventListener('click', filterListClickHandler);
 };
 
 export {activateFilters};

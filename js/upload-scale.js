@@ -1,6 +1,6 @@
 const SCALE_STEP = 25;
 
-const scaleValue = {
+const scaleValues = {
   MIN: 25,
   MAX: 100,
 };
@@ -9,38 +9,38 @@ const uploadForm = document.querySelector('.img-upload__form');
 const uploadFormImg = uploadForm.querySelector('.img-upload__preview img');
 
 const scale = uploadForm.querySelector('.img-upload__scale');
-const scaleControlSmaller = scale.querySelector('.scale__control--smaller');
-const scaleControlBigger = scale.querySelector('.scale__control--bigger');
-const scaleControlText = scale.querySelector('.scale__control--value');
+const scaleZoomOut = scale.querySelector('.scale__control--smaller');
+const scaleZoomIn = scale.querySelector('.scale__control--bigger');
+const scaleTextValue = scale.querySelector('.scale__control--value');
 
 const getScale = (step) => {
-  const scaleControlValue = parseInt(scaleControlText.value, 10);
-  const scaleControlValueCurrent = scaleControlValue + step;
-  if (scaleControlValueCurrent > scaleValue.MAX) {
-    return scaleValue.MAX;
+  const scaleValue = parseInt(scaleTextValue.value, 10);
+  const scaleValueCurrent = scaleValue + step;
+  if (scaleValueCurrent > scaleValues.MAX) {
+    return scaleValues.MAX;
   }
-  if (scaleControlValueCurrent < scaleValue.MIN) {
-    return scaleValue.MIN;
+  if (scaleValueCurrent < scaleValues.MIN) {
+    return scaleValues.MIN;
   }
-  return scaleControlValueCurrent;
+  return scaleValueCurrent;
 };
 
 const setScale = (value) => {
-  scaleControlText.value = `${value}%`;
+  scaleTextValue.value = `${value}%`;
   uploadFormImg.style.transform = `scale(${value / 100})`;
 };
 
-const resetScale = () => {
-  setScale(scaleValue.MAX);
+const resetScale = () => setScale(scaleValues.MAX);
+
+const scaleZoomOutClickHandler = () => {
+  setScale(getScale(-SCALE_STEP));
 };
 
-scaleControlSmaller.addEventListener('click', () => {
-  setScale(getScale(-SCALE_STEP));
-});
-
-scaleControlBigger.addEventListener('click', () => {
+const scaleZoomInClickHandler = () => {
   setScale(getScale(SCALE_STEP));
-});
+};
 
+scaleZoomOut.addEventListener('click', scaleZoomOutClickHandler);
+scaleZoomIn.addEventListener('click', scaleZoomInClickHandler);
 
 export {resetScale};

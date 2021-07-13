@@ -13,9 +13,11 @@ const onRequestSuccess = (data) => {
   activateFilters(data);
 };
 
+const onRequestError = () => showAlert(ALERT_MSG, ALERT_TIMEOUT);
+
 createRequest(
   onRequestSuccess,
-  () => showAlert(ALERT_MSG, ALERT_TIMEOUT),
+  onRequestError,
   DOWNLOAD_URL,
   {
     method: 'GET',

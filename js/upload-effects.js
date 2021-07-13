@@ -8,7 +8,7 @@ const sliderOptionsDefault = {
   },
 };
 
-const sliderOptionsEffects = {
+const sliderOptionsConfig = {
   chrome: {
     settings: {
       range: {
@@ -75,14 +75,14 @@ const uploadForm = document.querySelector('.img-upload__form');
 const uploadFormImg = uploadForm.querySelector('.img-upload__preview img');
 
 const sliderWrap = uploadForm.querySelector('.img-upload__effect-level');
-const sliderElement = sliderWrap.querySelector('.effect-level__slider');
+const slider = sliderWrap.querySelector('.effect-level__slider');
 
 const effectsList = uploadForm.querySelector('.effects__list');
-const effectsLevelValue = uploadForm.querySelector('.effect-level__value');
+const effectsLevelInput = uploadForm.querySelector('.effect-level__value');
 
 let currentEffect = DEFAULT_EFFECT;
 
-const changeEffectClassname = (item) => {
+const changeEffectClassName = (item) => {
   uploadFormImg.classList.remove(`effects__preview--${currentEffect}`);
   currentEffect = item.value;
   uploadFormImg.classList.add(`effects__preview--${currentEffect}`);
@@ -93,27 +93,27 @@ const setEffectFilter = (filterName, value, unit) => {
 };
 
 const updateSlider = (values, handle) => {
-  const effectFilter = sliderOptionsEffects[currentEffect].filter;
-  const effectUnit = sliderOptionsEffects[currentEffect].unit;
+  const effectFilter = sliderOptionsConfig[currentEffect].filter;
+  const effectUnit = sliderOptionsConfig[currentEffect].unit;
 
-  effectsLevelValue.value = values[handle];
-  setEffectFilter(effectFilter, effectsLevelValue.value, effectUnit);
+  effectsLevelInput.value = values[handle];
+  setEffectFilter(effectFilter, effectsLevelInput.value, effectUnit);
 };
 
 const configureSlider = (options) => {
   sliderWrap.classList.remove('hidden');
-  if (!sliderElement.noUiSlider) {
-    noUiSlider.create(sliderElement, {...sliderOptionsDefault, ...options});
-    sliderElement.noUiSlider.on('update', updateSlider);
+  if (!slider.noUiSlider) {
+    noUiSlider.create(slider, {...sliderOptionsDefault, ...options});
+    slider.noUiSlider.on('update', updateSlider);
   } else {
-    sliderElement.noUiSlider.updateOptions(options);
+    slider.noUiSlider.updateOptions(options);
   }
-  effectsLevelValue.value = options.start;
+  effectsLevelInput.value = options.start;
 };
 
 const destroySlider = () => {
-  if (sliderElement.noUiSlider) {
-    sliderElement.noUiSlider.destroy();
+  if (slider.noUiSlider) {
+    slider.noUiSlider.destroy();
   }
 };
 
@@ -121,16 +121,16 @@ const resetEffects = () => {
   currentEffect = DEFAULT_EFFECT;
   uploadFormImg.style.filter = '';
   uploadFormImg.className = '';
-  effectsLevelValue.value = '';
+  effectsLevelInput.value = '';
   destroySlider();
   sliderWrap.classList.add('hidden');
 };
 
-const effectsRadioClickHandler = (evt) => {
+const effectsListClickHandler = (evt) => {
   if (evt.target.matches('[type=radio]')) {
-    changeEffectClassname(evt.target);
+    changeEffectClassName(evt.target);
     if (currentEffect !== DEFAULT_EFFECT) {
-      configureSlider(sliderOptionsEffects[currentEffect].settings);
+      configureSlider(sliderOptionsConfig[currentEffect].settings);
     } else {
       resetEffects();
     }
@@ -139,6 +139,6 @@ const effectsRadioClickHandler = (evt) => {
 
 resetEffects();
 
-effectsList.addEventListener('click', effectsRadioClickHandler);
+effectsList.addEventListener('click', effectsListClickHandler);
 
 export {resetEffects};

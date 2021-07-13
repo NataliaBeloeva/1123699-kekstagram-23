@@ -8,18 +8,18 @@ let pictures;
 const renderPicture = ({id, url, likes, comments}) => {
   const picture = pictureTemplate.cloneNode(true);
   const pictureImg = picture.querySelector('.picture__img');
-  const pictureLikes = picture.querySelector('.picture__likes');
-  const pictureComments = picture.querySelector('.picture__comments');
+  const pictureLikesAmount = picture.querySelector('.picture__likes');
+  const pictureCommentsAmount = picture.querySelector('.picture__comments');
 
   picture.dataset.id = id;
   pictureImg.src = url;
-  pictureLikes.textContent = likes;
-  pictureComments.textContent = comments.length;
+  pictureLikesAmount.textContent = likes;
+  pictureCommentsAmount.textContent = comments.length;
 
   return picture;
 };
 
-const pictureClickHandler = (evt) => {
+const pictureListClickHandler = (evt) => {
   const picture = evt.target.closest('.picture');
   if (picture) {
     evt.preventDefault();
@@ -33,9 +33,7 @@ const pictureClickHandler = (evt) => {
   }
 };
 
-const removePictures = () => {
-  pictureList.querySelectorAll('.picture').forEach((item) => item.remove());
-};
+const removePictures = () => pictureList.querySelectorAll('.picture').forEach((item) => item.remove());
 
 const renderPictures = (data) => {
   const pictureListFragment = document.createDocumentFragment();
@@ -43,12 +41,10 @@ const renderPictures = (data) => {
 
   removePictures();
 
-  pictures.forEach((item) => {
-    pictureListFragment.appendChild(renderPicture(item));
-  });
+  pictures.forEach((item) => pictureListFragment.appendChild(renderPicture(item)));
 
   pictureList.appendChild(pictureListFragment);
-  pictureList.addEventListener('click', pictureClickHandler);
+  pictureList.addEventListener('click', pictureListClickHandler);
 };
 
 export {renderPictures};

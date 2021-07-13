@@ -1,11 +1,11 @@
 import {isEscEvent} from './util.js';
-import {isUploadFormActiveField, setInputValid, hashtagInputHandler} from './validator.js';
+import {isUploadFormActiveField, setInputValid, uploadHashtagInputHandler} from './validator.js';
 import {resetScale} from './upload-scale.js';
 import {resetEffects} from './upload-effects.js';
 import {createRequest} from './api.js';
 import {renderPopup} from './upload-form-popup.js';
 
-const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 const UPLOAD_URL = 'https://23.javascript.pages.academy/kekstagram';
 
 const uploadForm = document.querySelector('.img-upload__form');
@@ -35,17 +35,21 @@ const closeUploadForm = () => {
   uploadOverlay.classList.add('hidden');
   document.body.classList.remove('modal-open');
 
-  uploadHashtag.removeEventListener('input', hashtagInputHandler);
+  uploadHashtag.removeEventListener('input', uploadHashtagInputHandler);
   uploadCancel.removeEventListener('click', closeUploadForm);
+
+  // eslint-disable-next-line no-use-before-define
+  document.removeEventListener('keydown', documentKeydownHandler);
 };
 
 const documentKeydownHandler = (evt) => {
   if (isEscEvent(evt) && !isUploadFormActiveField()) {
     evt.preventDefault();
     closeUploadForm();
-    document.removeEventListener('keydown', documentKeydownHandler);
   }
 };
+
+const uploadCancelClickHandler = () => closeUploadForm();
 
 const openUploadForm = () => {
   resetUpload();
@@ -53,13 +57,9 @@ const openUploadForm = () => {
   uploadOverlay.classList.remove('hidden');
   document.body.classList.add('modal-open');
 
-  uploadHashtag.addEventListener('input', hashtagInputHandler);
+  uploadHashtag.addEventListener('input', uploadHashtagInputHandler);
+  uploadCancel.addEventListener('click', uploadCancelClickHandler);
   document.addEventListener('keydown', documentKeydownHandler);
-
-  uploadCancel.addEventListener('click', () => {
-    closeUploadForm();
-    document.removeEventListener('keydown', documentKeydownHandler);
-  });
 };
 
 const uploadImage = () => {
@@ -76,6 +76,9 @@ const uploadImage = () => {
       uploadFormEffectPreviews.forEach((item) => item.style.backgroundImage = `url(${result})`);
     });
     reader.readAsDataURL(file);
+  } else {
+    uploadFile.value = '';
+    resetUploadImage();
   }
 };
 
@@ -84,12 +87,12 @@ const uploadFileChangeHandler = () => {
   uploadImage();
 };
 
-const onFormSendSuccess = () => {
+const setFormSendSuccess = () => {
   closeUploadForm();
   renderPopup('success');
 };
 
-const onFormSendError = () => {
+const setFormSendError = () => {
   closeUploadForm();
   renderPopup('error');
 };
@@ -99,10 +102,9 @@ uploadFile.addEventListener('change', uploadFileChangeHandler);
 uploadForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   const formData =  new FormData(evt.target);
-
   createRequest(
-    onFormSendSuccess,
-    onFormSendError,
+    setFormSendSuccess,
+    setFormSendError,
     UPLOAD_URL,
     {
       method: 'POST',

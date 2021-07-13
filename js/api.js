@@ -3,9 +3,8 @@ const createRequest = (onSuccess, onError, url, options) => {
     .then((response) => {
       if (response.ok) {
         return response.json();
-      } else {
-        onError();
       }
+      onError();
     })
     .then((result) => {
       if (onSuccess) {

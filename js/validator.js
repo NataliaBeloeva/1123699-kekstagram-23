@@ -18,7 +18,7 @@ const setInputValid = () => {
   uploadHashtag.setCustomValidity('');
 };
 
-const hashtagValidator = (hashtagString) => {
+const validateHashtag = (hashtagString) => {
   const hashtags = hashtagString.trim().split(' ').map((item) => item.toLowerCase());
 
   if (hashtags.length > MAX_HASHTAG_COUNT) {
@@ -41,14 +41,14 @@ const hashtagValidator = (hashtagString) => {
   }
 };
 
-const hashtagInputHandler = () => {
+const uploadHashtagInputHandler = () => {
   const hashtagString = uploadHashtag.value;
 
   setInputValid();
   if (hashtagString !== '') {
-    hashtagValidator(hashtagString);
+    validateHashtag(hashtagString);
   }
   uploadHashtag.reportValidity();
 };
 
-export {isUploadFormActiveField, setInputValid, hashtagInputHandler};
+export {isUploadFormActiveField, setInputValid, uploadHashtagInputHandler};
